@@ -12,7 +12,7 @@ HttpServer passes uploaded programs to the interpreter.py program to be stored a
 
 ## Interpreter
 
-This program runs uploaded user programs using python exec() it provides access to the hardware using a globals dictionary which gives the user program access to the following classes:-
+This program runs uploaded user programs using python exec() it provides access to the hardware using a globals dictionary which gives the user program access to the following classes (See HullOS.py):-
 
 - motors - which provides control over the Pixelbot motors.
 - neopixels - which proviudes control over the 12 neopixel ring
