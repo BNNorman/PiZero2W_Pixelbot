@@ -1,6 +1,6 @@
 # Motors.md
 
-In all cases, if **duration** is zero or not specified the motion is as fast as possible.
+In all cases, if **duration** (seconds) is zero or not specified the motion is as fast as possible.
 
 Also, all commands return True if the command succeeded or False otherwise.
 
