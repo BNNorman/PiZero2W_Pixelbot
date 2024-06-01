@@ -20,3 +20,12 @@ This program runs uploaded user programs using python exec() it provides access 
 - mqtt  which enables message passing between Pixelbots or a controller
 - distance() which returns the distance sensor reading (mm)
 - myname() which returns the name of the Pixelbot (see Config.py)
+
+# Starting the code
+
+Your could setup a systemd service to start the Pixelbot running at power on etc. This hasn't been done because I was using Thonny to run the HttpServer and debug the code.
+
+When the HttpServer runs it instantiates interpreter.py which, in turn starts to run the currently uploaded/saved program (StoredProgram.py - see Config.py) 
+
+
+
