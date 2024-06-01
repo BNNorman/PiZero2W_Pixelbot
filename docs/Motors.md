@@ -36,8 +36,20 @@ If using the standard robot wheels this is set in Config.py.
 
 ## motors.getWheelConfig()
 
-This returns True if the command succeeded otherwise False. It outputs information to the stdout on the pi. Nothing else is returned to you program.
+This returns True if the command succeeded otherwise False. It outputs information to the stdout on the pi. Nothing else is returned to your program.
 
+# Example Program
+This program just drives the Pixelbot forward 100mm at a time. If it gets withing 50mm of an obstacle the motors are stopped and the Pixelbot turns 90 degrees then resumes moving.
+
+```
+while True:
+  motors.move(100) # 100mm
+  while motors.areMoving():
+    if distance()<50:
+      motors.stop()
+      motors.rotate(90)
+
+```
 
 
 
