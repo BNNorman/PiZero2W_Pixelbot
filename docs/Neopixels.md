@@ -1,8 +1,8 @@
 # Neopixels
 
-Nornmally the bot has a 12 led neopixel ring but the length can be set in Config.sys
+Normally the Pixelbot, as designed, has a 12 led neopixel ring but the length can be set in Config.sys
 
-All commands return True on success and False otherwise. On failure a message is displayed on stdout.
+All commands return True on success and False otherwise. On failure a message is displayed on stdout. If you are monitoring the Pixelbot using Thonny (or similar) the messages appear in the REPL window.
 
 ## neopixels.colourCandle(colour)
 
@@ -31,6 +31,31 @@ Enables or disbles flickering
 ## neopixels.random()
 
 Randomise the colours of the neopixels.
+
+# Example program
+
+This simple loop just changes the neopixel colours. In Rob Mile's original design GREEN signifies a HAPPY Pixelbot and RED an ANGRY Pixelbot. Do what ever you want.
+
+```
+from Colours import RED,GREEN,BLUE
+import time
+
+while True: 
+  neopixels.colourCandle(RED)
+  time.sleep(1)
+  neopixels.colourCandle(GREEN)
+  time.sleep(1)
+  neopixels.colourCandle(BLUE)
+  time.sleep(1)
+  neopixels.random()
+  time.sleep(1)
+
+
+```
+
+
+
+
 
 
 
