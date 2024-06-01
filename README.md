@@ -1,10 +1,16 @@
-# PiZero2W_Pixelbot
+# Readme.md
 
-Using a Pi Zero &amp; Python to send commands to a Rob Miles pixelbot via a serial connection.
+This project uses a Pi Zero W to send Python programs to a Rob Miles' Pico powered Pixelbot (http://hullpixelbot.com.) via a serial connection. The Pi Zero W exposes a web page which allows you to download, edit and upload the Python programs.
 
-Actually, it's a lot more than that, you can upload a Python program and have the Pixelbot controlled from it.
+The code supports MQTT so that some inter-Pixelbot communication can take place - or you can just send commands to your chosen bot from a wiFi device.
 
-Here's a sample program which allows the pixelbot to receive and act on messages from an mqtt broker. You could be sending it commands manually or Pixelbots could be talking to each other, or even just muttering to themselves.
+This code has been tested using a Pico W on the Pixelbot linked to a Pi Zero W using the serial interfaces. To make this work you need to modify the Pixelbot sources to use Serial1 rather than the default Serial (which outputs via the Pico USB interface. Fear not, the Pixelbot Firmware folder includes a UF2 which you can install on the Pico W.
+
+Be warned though, no attempt has been made to secure the code. The project is mainly aimed at encouraging kids to program, in Python, by providing hardware and software which they can use.
+
+## example mqtt program
+
+Here's a sample program which allows the Pixelbot to receive and act on messages from an mqtt broker. You could be sending it commands manually or Pixelbots could be talking to each other, or even just muttering to themselves (as in this example).
 
 ```
 From Colours import RED,GREEN,BLUE
@@ -36,7 +42,7 @@ while True:
      time.sleep(0.1)
 ```
 
-read the docs to find out what else you can do - the Pixelbot has a speaker and an ultrasonic distance sensor
+Read the docs to find out what else you can do.
 
 
   
