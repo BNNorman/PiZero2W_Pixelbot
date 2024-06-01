@@ -32,3 +32,38 @@ Sends a string message to the specified topic.
 
 The topic could be a path to another Pixelbot so they could exchange messages.
 
+# Example Program
+
+This very simplistic program allows you to send 'move' and 'rotate' commands vi MQTT to a Pixelbot on the topic "/pixelbot/motors".
+
+If you have multiple Pixelbots you should include the Pixelbot name in the topic to listen only for commands targetting your Pixelbot. 
+
+```
+# define our callback function for controlling motors
+def motorsCB(msg):
+  # expecting a comma separated list cmd,p1[,p2,p3]
+  params=msg.split(",")
+  cmd=params[0].strip().upper()
+  if cmd=="MOVE":
+    if len(params)==3:
+      motors.move(param[1],params[2])
+    else:
+      motors.move(param[1]) # default duration=0
+  elif cmd=="ROTATE":
+    if len(params)==3:
+      motors.rotate(param[1],params[2])
+    else:
+      motors.rotate(param[1]) # default duration=0
+  else:
+      print(f"Unexpected command {cmd}")
+
+# add the callback to listen for messages sent to
+# this Pixelbot
+mqtt.add_callback(f"/{myname()}/motors",motorsCB)
+
+while True:
+  # do nothing but don't use pass which will consume
+  # cpu resources 
+  time.sleep(0.1)
+
+```
