@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Hull Pixelbot Program Editor</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+
+<body onload="doOnLoad();">
+    <div class="container mb-2 mt-2">
+        <h1 class="mb-4">&#128421;&#65039; Hull Pixelbot Program Editor (CircuitPython) </h1>
+    </div>
+    <p>
+    <div class="container mb-2 mt-2">
+        <textarea style="font-family:monospace;" id="textEdit" class="w-100" rows="20" cols="120" id="edit">%%TEXTAREA%%</textarea>
+        </p>
+    </div>
+
+    <div class="container mb-2 mt-2" id="actionButtons">
+        <div class="row justify-content-between">
+             <div class="col">
+                <button class="btn btn-primary mb-2" onclick="doDownload();">Download</button>
+            </div>
+            <div class="col">
+                <button class="btn btn-primary mb-2" onclick="doUpload();">Upload</button>
+            </div>
+            <div class="col">
+                <button class="btn btn-primary mb-2" onclick="doRun();">Run</button>
+            </div>
+
+            <div class="col">
+                <button class="btn btn-primary mb-2" onclick="doStop();">Stop</button>
+            </div>
+            <div class="col">
+                <button class="btn btn-primary mb-2" onclick="doSampleProgram();">Sample</button>
+            </div>
+            <div class="col">
+                <button class="btn btn-primary mb-2" onclick="doClearProgram();">Clear Editor</button>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="container mb-2 mt-2">
+        <textarea style="font-family:monospace;" class="w-100" rows="5" cols="120" id="output"
+            onkeypress="doTerminalOutputKeypress();">%%OUTPUT%%</textarea>
+        </p>
+    </div>
+    
+    <script>
+
+
+        function logText(text) {
+            let output = document.getElementById('output');
+            output.value = output.value + text;
+            output.scrollTop = output.scrollHeight;
+        }
+
+        async function doDownload(){
+             window.location="download";
+        }
+
+        async function doUpload() {
+            let sketch = encodeURIComponent(document.getElementById('textEdit').value);
+            window.location="upload?program="+sketch;  // GET
+            //window.postMessage("upload?program="+sketch,window.location); // POST
+        }
+        
+
+        async function doRun(){
+            window.location="run";
+        }
+
+        async function doStop(){
+           window.location="stop";
+        }
+
+        async function doClearProgram(){
+             window.location="clear";
+        }
+        
+
+
+        let builtInProgramNo = 0;
+
+        let builtInPrograms = [
+`# Test ALL
+import random
+
+# D, E, C, C, G - close encounters
+# repeat with a planned gap of 5 seconds at the end
+music=[(196,.5,.1),(261,.5,.1),(174,.5,.1),(87,.5,.1),(130,1,5)]
+speaker.queueMusic(music,True) # repeat after last note
+
+# Spinning rainbow
+neopixels.rainbow()
+neopixels.spin(1) # <speed>,<enabled> (default)
+
+# time.sleep to watch rainbow spinning before changing
+# the neopixels
+time.sleep(10)
+neopixels.fadeInOut(1)
+
+# square dance
+import time
+while True:
+  motors.move(100)
+  while motors.areMoving():
+  
+      # back off if too close to something
+      if distance()<50:
+          motors.stop()
+          motors.move(-100)
+      else:
+          time.sleep(0.1)
+  
+  # spin a coin to decide direction of turn
+  if random.randint(0,1):
+     motors.turn(90)
+  else:
+     motors.turn(-90)
+     
+  # wait till the turn finishes
+  while motors.areMoving():
+    time.sleep(0.1)
+`,
+`# Coloured flashing
+# You cannot do this 'from Colours import *'
+from Colours import RED,GREEN,BLUE
+import time
+while True:
+  neopixels.colourCandle(RED)
+  time.sleep(2)
+  neopixels.colourCandle(GREEN)
+  time.sleep(2)
+  neopixels.colourCandle(BLUE)
+  time.sleep(2)
+`,
+`# Two tone
+while True:
+  speaker.play(1000,1,1)
+  speaker.play(2000,1,1)
+`,
+`# square dance 
+while True:
+  motors.move(100)
+  motors.turn(90)
+`,
+`# distance light 
+from Colours import RED,YELLOW,GREEN
+while True:
+  if distance() < 100:
+    neopixels.colourCandle(RED)
+  elif distance() < 200:
+    neopixels.colourCandle(YELLOW)
+  else:
+    neopixels.colourCandle(GREEN)
+`,
+`# robot coward 
+from Colours import RED,GREEN
+while True:
+  neopixels.colourCandle("GREEN")
+  if distance() < 100:
+    neopixels.colourCandle("RED")
+    motors.move(-100)
+`,
+`# turn and run 
+from Colours import RED,GREEN
+while True:
+  neopixels.colourCandle(GREEN)
+  if distance() < 100:
+    neopixels.colourCandle(RED)
+    motors.turn(180)
+    motors.move(100)
+`,
+`# avoid obstacles 
+from Colours import RED,GREEN
+while True:
+  neopixels.colourCandle(GREEN)
+  motors.move(10)
+  if distance() < 100:
+    neopixels.colourCandle(RED)
+    motors.turn(90)
+`,
+`# spin the bottle
+from Colours import RED,GREEN
+import random
+while True:
+  neopixels.colourCandle(GREEN)
+  if distance() < 100:
+    a = random.randint(1,30)
+    a = a+360
+    neopixels.colourCandle(RED)
+    motors.turn(a)
+`,
+`# theramin
+while True:
+  f=distance()*20
+  f=f+1000
+  speaker.play(f,0.1,0)
+`,
+`# MQTT test script
+import time
+
+print("My pixelbotname is ",myname())
+
+myTopic=f"/pixelbot/{myname()}"
+
+def myCB(msg):
+    print("myCB got message",msg)
+    if msg=="RANDOM":
+       neopixels.random()
+    else neopixels.colourCandle(msg)
+
+
+# mqtt automatically subscribes to /pixelbot/myname but only
+# forwards messages if you add a callback
+mqtt.add_callback(MyTopic,myCB)
+
+while True:
+    mqtt.publish(myTopic,"RANDOM")
+    time.sleep(2)
+    mqtt.publish(myTopic,"R")
+    time.sleep(2)
+    mqtt.publish(myTopic,"G")
+    time.sleep(2)
+    mqtt.publish(myTopic,"B")
+    time.sleep(2)
+    mqtt.publish(myTopic,"Y")
+    time.sleep(2)
+    mqtt.publish(myTopic,"M")
+    time.sleep(2)
+`,
+`# Music
+# Close Encounters of the Third Kind
+music = [(196, 1, .1), (261, 1, .1), (174, 1, .1), (87, 1, .1), (130, 2, 0)]
+for (f,d,w) in music:
+    # f=frequency, d=duration, w=wait_after (between notes)
+    speaker.play(f,d,w,True) # play note and wait
+`
+    ];
+
+
+
+
+
+
+    function doSampleProgram(){
+        let input = document.getElementById('textEdit');
+        input.value = builtInPrograms[builtInProgramNo];
+        builtInProgramNo++;
+        if(builtInProgramNo==builtInPrograms.length){
+            builtInProgramNo=0;
+        }
+    }
+
+</script>
+</body>
+
+</html>
